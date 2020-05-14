@@ -90,3 +90,26 @@
     + new Proxy(代理对象,代理做什么)
     + proxy的get(target, key)  目标对象和属性值
     + proxy的set(target, key, value)
+
+19. Generator 让遍历停止
+    + 在函数方法名前添加 * 
+    + 方法执行用yield 定义停止 
+    + 通过next()方法控制进行下一步
+    + 直到next()执行完所有由yield控制的语句执行完才执行下面语句
+    + return()实现控制流程直接结束
+    + throw(new Error)可以抛出异常来结束next流程
+
+20. Iterator 实现不可遍历的数据类型实现遍历
+21. 模块导出
+    + export default 变量
+    + export { }
+    + export function(){}
+22. 模块引入
+    + import 变量 from '路径'
+23. ES7判断元素是否在数组中array.include('元素')
+24. ES7中数学乘方 2**3 === Math.pow(2,3)
+25. ES8获取对象中全部key  Object.keys(obj)
+26. ES8获取对象中全部value Object.values(obj)
+27. ES8获取对象中key和value Object.entries(obj)返回一个[key,value]
+28. ES8补全位数str.padStart(位数,补的数字) /str.padEnd(位数,补的数字)
+29. ES8获取对象的描述符Object.getOwnPropertyDescriptors(obj)

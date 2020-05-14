@@ -211,3 +211,51 @@ function testProxy() {
     console.log(d.price, d.name);
 }
 testProxy()
+
+function* testGer() {
+    for (let i = 0; i < 5; i++) {
+        yield console.log(i);
+    }
+}
+const l = testGer()
+l.next()
+l.next()
+l.next()
+l.next()
+l.next()
+l.next()
+
+
+// function testIter() {
+//     let authors = {
+//         A: ['a', 'aa', 'aaa'],
+//         B: ['b', 'bb', 'bbb'],
+//         C: ['c', 'cc', 'ccc']
+//     }
+//     authors[Symbol.iterator] = function() {
+//         let all = this.authors //this指向对象本身
+//         let keys = Reflect.ownKeys(all) //获得所有key
+//         let values = []
+//         return {
+//             next() {
+//                 if (!values.length) {
+//                     if (keys.length) {
+//                         values = all[keys[0]]
+//                         keys.shift()
+//                     }
+//                 }
+//                 return {
+//                     done: !values.length,
+//                     value: values.shift()
+//                 }
+//             }
+//         }
+//     }
+//     let r = []
+//     for (let i of authors) {
+//         r.push(i)
+//     }
+//     console.log(r);
+// }
+
+// testIter()
