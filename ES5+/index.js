@@ -133,3 +133,81 @@ function testAssign() {
     console.log(target, source);
 }
 testAssign()
+
+// 解构
+function testJ() {
+    let arr = 'abcd'
+    let [a, b] = arr
+    console.log(a, b);
+}
+testJ()
+
+// Promise
+function loadScript(src) {
+    return new Promise((resolve, reject) => {
+        let script = document.createElement('script')
+        script.src = src
+        src.onload = () => {
+            resolve(src)
+        }
+        src.error = (err) => {
+            reject(err)
+        }
+        document.body.append(script)
+    })
+}
+
+function loadImage(src) {
+    return new Promise((resolve, reject) => {
+        let image = document.createElement('img')
+        let div = document.getElementsByClassName('content')[0]
+        image.src = src
+        src.onload = () => {
+            resolve(1)
+        }
+        src.error = (err) => {
+            reject(err)
+        }
+        div.append(image)
+    })
+}
+
+// loadScript('./1.js').then((res) => {
+//     console.log(res, "------");
+//     loadImage('./img/hai.jpg')
+// }, (err) => {
+//     console.log(err);
+// })
+
+// Reflect
+console.log(Reflect.apply(Math.floor, null, [4.72]));
+
+let price = 101.2
+if (price > 100) {
+    price = Math.floor.apply(null, [price])
+} else {
+    price = Math.ceil.apply(null, [price])
+}
+console.log(price);
+console.log(Reflect.apply(price > 100 ? Math.floor : Math.ceil, null, [price]));
+
+
+// Reflect.defineProperty(obj, 'name', { value: 'name' })
+
+// proxy代理
+function testProxy() {
+    let o = {
+        name: 'tony',
+        price: 1000
+    }
+    let d = new Proxy(o, {
+        get(target, key) {
+            return target[key]
+        },
+        set(target, key, value) {
+            return false //不可修改
+        }
+    })
+    console.log(d.price, d.name);
+}
+testProxy()

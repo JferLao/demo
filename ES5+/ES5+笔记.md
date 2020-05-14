@@ -80,3 +80,13 @@
     + `${变量}`
 
 15. 解构
+16. Promise
+17. Reflect 反射机制
+    + 不能使用new 直接调用方法即可
+    + console.log(Reflect.apply(Math.floor, null, [4.72]))
+    + Reflect.defineProperty(obj, 'name', { value: 'name' })
+
+18. Proxy代理
+    + new Proxy(代理对象,代理做什么)
+    + proxy的get(target, key)  目标对象和属性值
+    + proxy的set(target, key, value)
