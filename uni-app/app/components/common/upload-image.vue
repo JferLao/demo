@@ -59,7 +59,6 @@
 			this.imageList = this.list
 		},
 		mounted() {
-			console.log(this.list);
 			this.imageList = this.list
 		},
 		onUnload() {
@@ -89,7 +88,6 @@
 			},
 			chooseImage: async function() {
 				// #ifdef APP-PLUS
-				console.log(this.sourceTypeIndex);
 				// TODO 选择相机或相册时 需要弹出actionsheet，目前无法获得是相机还是相册，在失败回调中处理
 				if (this.sourceTypeIndex !== 2) {
 					let status = await this.checkPermission();
