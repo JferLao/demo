@@ -40,69 +40,6 @@
 </template>
 
 <script>
-	const demo = [{
-		cover:"/static/demo/topicpic/1.jpeg",
-		title:"话题名称",
-		desc:"话题描述",
-		today_count:0,
-		news_count:10
-	},{
-		cover:"/static/demo/topicpic/1.jpeg",
-		title:"话题名称",
-		desc:"话题描述",
-		today_count:0,
-		news_count:10
-	},{
-		cover:"/static/demo/topicpic/1.jpeg",
-		title:"话题名称",
-		desc:"话题描述",
-		today_count:0,
-		news_count:10
-	},{
-		cover:"/static/demo/topicpic/1.jpeg",
-		title:"话题名称",
-		desc:"话题描述",
-		today_count:0,
-		news_count:10
-	},{
-		cover:"/static/demo/topicpic/1.jpeg",
-		title:"话题名称",
-		desc:"话题描述",
-		today_count:0,
-		news_count:10
-	},{
-		cover:"/static/demo/topicpic/1.jpeg",
-		title:"话题名称",
-		desc:"话题描述",
-		today_count:0,
-		news_count:10
-	},{
-		cover:"/static/demo/topicpic/1.jpeg",
-		title:"话题名称",
-		desc:"话题描述",
-		today_count:0,
-		news_count:10
-	},{
-		cover:"/static/demo/topicpic/1.jpeg",
-		title:"话题名称",
-		desc:"话题描述",
-		today_count:0,
-		news_count:10
-	},{
-		cover:"/static/demo/topicpic/1.jpeg",
-		title:"话题名称",
-		desc:"话题描述",
-		today_count:0,
-		news_count:10
-	},{
-		cover:"/static/demo/topicpic/1.jpeg",
-		title:"话题名称",
-		desc:"话题描述",
-		today_count:0,
-		news_count:10
-	}];
-	
-	
 	import topicList from '@/components/news/topic-list.vue';
 	import loadMore from '@/components/common/load-more.vue';
 	export default {
@@ -117,26 +54,9 @@
 				// 顶部选项卡
 				scrollInto:"",
 				tabIndex:0,
-				tabBars: [{
-				    name: '关注',
-				}, {
-				    name: '推荐',
-				}, {
-				    name: '体育',
-				}, {
-				    name: '热点',
-				}, {
-				    name: '财经',
-				}, {
-				    name: '娱乐',
-				}, {
-				    name: '军事',
-				}, {
-				    name: '历史',
-				}, {
-				    name: '本地',
-				}],
-				newsList:[]
+				tabBars: [],
+				newsList:[],
+				choose:false
 			}
 		},
 		// 监听点击导航栏搜索框
@@ -151,7 +71,7 @@
 				url: '../add-input/add-input',
 			})
 		},
-		onLoad() {
+		onLoad(e) {
 			uni.getSystemInfo({
 				success:res=>{
 					this.scrollH = res.windowHeight - uni.upx2px(101)
@@ -159,24 +79,71 @@
 			})
 			// 根据选项生成列表
 			this.getData()
+			
+			if(e.choose){
+				uni.setNavigationBarTitle({
+					title:'选择话题'
+				})
+				this.choose = true
+			}
 		},
 		methods: {
 			// 获取数据
 			getData(){
-				var arr = []
-				for (let i = 0; i < this.tabBars.length; i++) {
-					// 生成列表模板
-					let obj = {
-						// 1.上拉加载更多  2.加载中... 3.没有更多了
-						loadmore:"上拉加载更多",
-						list:[]
+				// 获取分类
+				this.$H.get('/topicclass').then(res=>{
+					// 渲染分类
+					this.tabBars = res.list
+					var arr = []
+					for (let i = 0; i < this.tabBars.length; i++) {
+						// 生成列表模板
+						let obj = {
+							// 1.上拉加载更多  2.加载中... 3.没有更多了
+							loadmore:"上拉加载更多",
+							list:[],
+							page:1,
+							firstLoad:false
+						}
+						arr.push(obj)
 					}
-					if (i < 2) {
-						obj.list = demo
+					this.newsList = arr
+					// 获取第一个分类的数据
+					if (this.tabBars.length) {
+						this.getList()
 					}
-					arr.push(obj)
-				}
-				this.newsList = arr
+				})
+			},
+			// 获取指定分类下的列表
+			getList(){
+				let index = this.tabIndex
+				let id = this.tabBars[index].id
+				let page = this.newsList[index].page
+				let isrefresh = page === 1
+				this.$H.get('/topicclass/'+id+'/topic/'+page)
+				.then(res=>{
+					let list = res.list.map(v=>{
+						return {
+							id:v.id,
+							cover:v.titlepic,
+							title:v.title,
+							desc:v.desc,
+							today_count:v.todaypost_count,
+							news_count:v.post_count
+						}
+					})
+			
+					this.newsList[index].list = isrefresh ? [...list] : [...this.newsList[index].list,...list];
+					
+					this.newsList[index].loadmore  = list.length < 10 ? '没有更多了' : '上拉加载更多';
+					
+					if (isrefresh) {
+						this.newsList[index].firstLoad = true
+					}
+				}).catch(err=>{
+					if(!isrefresh){
+						this.newsList[index].page--;
+					}
+				})
 			},
 			// 监听滑动
 			onChangeTab(e){
@@ -190,33 +157,10 @@
 				this.tabIndex = index
 				// 滚动到指定元素
 				this.scrollInto = 'tab'+index
-			},
-			// 关注
-			follow(e){
-				this.list[e].isFollow = true
-				uni.showToast({ title: '关注成功' })
-			},
-			// 顶踩操作
-			doSupport(e){
-				// 拿到当前对象
-				let item = this.list[e.index]
-				let msg = e.type === 'support' ? '顶' : '踩'
-				// 之前没有操作过
-				if (item.support.type === '') {
-					item.support[e.type+'_count']++
-				} else if (item.support.type ==='support' && e.type === 'unsupport') {
-					// 顶 - 1
-					item.support.support_count--;
-					// 踩 + 1
-					item.support.unsupport_count++;
-				} else if(item.support.type ==='unsupport' && e.type === 'support'){ 					// 之前踩了
-					// 顶 + 1
-					item.support.support_count++;
-					// 踩 - 1
-					item.support.unsupport_count--;
+				// 获取当前分类下的列表数据
+				if (!this.newsList[this.tabIndex].firstLoad) {
+					this.getList()
 				}
-				item.support.type = e.type
-				uni.showToast({ title: msg + '成功' });
 			},
 			// 上拉加载更多
 			loadmore(index){
@@ -226,13 +170,9 @@
 				if (item.loadmore !== '上拉加载更多') return;
 				// 修改当前列表加载状态
 				item.loadmore = '加载中...'
-				// 模拟数据请求
-				setTimeout(()=>{
-					// 加载数据
-					item.list = [...item.list,...item.list]
-					// 恢复加载状态
-					item.loadmore = '上拉加载更多'
-				},10000)
+				// 请求数据
+				item.page++;
+				this.getList()
 			}
 		}
 	}

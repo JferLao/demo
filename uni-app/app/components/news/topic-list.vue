@@ -23,8 +23,7 @@
 		methods: {
 			open() {
 				uni.navigateTo({
-					// url: '../../pages/topic-detail/topic-detail?detail='+JSON.stringify(this.item),
-					url:'../../pages/topic-detail/topic-detail'
+					url: '../../pages/topic-detail/topic-detail?detail='+JSON.stringify(this.item),
 				});
 			}
 		},

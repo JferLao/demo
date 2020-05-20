@@ -2,20 +2,23 @@
 	<view class="px-2">
 		<view class="uni-uploader" v-if="show">
 			<view class="uni-uploader-head">
-				<view class="uni-uploader-title" v-if="imageList.length">点击可预览选好的图片</view>
+				<view class="uni-uploader-title">点击可预览选好的图片</view>
 				<view class="uni-uploader-info">{{imageList.length}}/9</view>
 			</view>
 			<view class="uni-uploader-body">
 				<view class="uni-uploader__files">
 					<block v-for="(image,index) in imageList" :key="index">
+						
 						<view class="uni-uploader__file position-relative">
 							<image class="uni-uploader__img rounded" :src="image" :data-src="image" @tap="previewImage" mode="aspectFill"></image>
+							
 							<view class="position-absolute top-0 right-0 rounded" style="padding: 0 15rpx;background-color: rgba(0,0,0,0.5);" @click.stop="deleteImage(index)">
 								<text class="iconfont icon-shanchu text-white"></text>
 							</view>
 						</view>
+						
 					</block>
-					<view class="uni-uploader__input-box rounded" >
+					<view class="uni-uploader__input-box rounded">
 						<view class="uni-uploader__input" @tap="chooseImage"></view>
 					</view>
 				</view>
@@ -56,9 +59,6 @@
 			}
 		},
 		onReady() {
-			this.imageList = this.list
-		},
-		mounted() {
 			this.imageList = this.list
 		},
 		onUnload() {

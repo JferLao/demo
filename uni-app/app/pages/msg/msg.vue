@@ -25,29 +25,29 @@
 
 <script>
 	const demo = [{
-		avatar:"/static/default.jpg",
-		username:"Tony",
+		avatar:"https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/userpic/2.jpg",
+		username:"张三",
 		update_time:1570718427,
-		data:"内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-		noread:20
+		data:"靓仔，在吗",
+		noread:1
 	},{
-		avatar:"/static/default.jpg",
-		username:"Tony",
+		avatar:"https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/userpic/3.jpg",
+		username:"王五",
 		update_time:1570718427,
-		data:"内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-		noread:20
+		data:"帝莎编程学院",
+		noread:5
 	},{
-		avatar:"/static/default.jpg",
-		username:"Tony",
+		avatar:"https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/userpic/4.jpg",
+		username:"李四",
 		update_time:1570718427,
-		data:"内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-		noread:20
+		data:"这是全栈开发吗",
+		noread:3
 	},{
-		avatar:"/static/default.jpg",
-		username:"Tony",
+		avatar:"https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/userpic/5.jpg",
+		username:"小六",
 		update_time:1570718427,
-		data:"内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容",
-		noread:20
+		data:"支持小程序吗",
+		noread:2
 	}];
 	
 	import msgList from '@/components/msg/msg-list.vue';
@@ -76,6 +76,9 @@
 		onNavigationBarButtonTap(e) {
 			switch (e.index){
 				case 0: // 左边
+				uni.navigateTo({
+					url: '../user-list/user-list',
+				});
 				// 关闭弹出层
 				this.$refs.popup.close()
 					break;
@@ -97,7 +100,9 @@
 			popupEvent(e){
 				switch (e){
 					case 'friend':
-					console.log('添加好友');
+					uni.navigateTo({
+						url: '../search/search?type=user',
+					});
 						break;
 					case 'clear':
 					console.log('清除列表');

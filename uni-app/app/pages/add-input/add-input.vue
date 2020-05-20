@@ -86,7 +86,6 @@
 				}
 			})
 		},
-		
 		methods: {
 			// 底部图片点击事件
 			iconClickEvent(e){

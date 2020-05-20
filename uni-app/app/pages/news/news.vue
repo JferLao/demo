@@ -21,7 +21,8 @@
 						<common-list :item="item" :index="index" @doSupport="doSupport"></common-list>
 						<divider></divider>
 					</block>
-					<load-more :loadmore="loadmore"></load-more>
+					<load-more v-if="list.length" :loadmore="loadmore"></load-more>
+					<no-thing v-else></no-thing>
 				</scroll-view>
 			</swiper-item>
 			<!-- 话题 -->
@@ -32,17 +33,20 @@
 					<hot-cate :hotCate="hotCate"></hot-cate>
 					<!-- 搜索框 -->
 					<view class="p-2">
-						<view class="bg-light rounded flex align-center justify-center py-2 text-secondary">
+						<view class="bg-light rounded flex align-center justify-center py-2 text-secondary" @click="openSearch">
 							<text class="iconfont icon-sousuo mr-2"></text>
 							搜索话题
 						</view>
 					</view>
 					<!-- 轮播图 -->
-					<swiper class="px-2 pb-2" :indicator-dots="true" :autoplay="true" 
+					<swiper class="px-2 pb-2" :indicator-dots="true" 
+					:autoplay="true" 
 					:interval="3000" :duration="1000">
-						<swiper-item>
-							<image src="/static/demo/banner2.jpg"
-							style="height: 300rpx;" class="w-100 rounded"></image>
+						<swiper-item v-for="(item,index) in swiperList"
+						:key="index">
+							<image :src="item.src"
+							style="height: 300rpx;" 
+							class="w-100 rounded"></image>
 						</swiper-item>
 					</swiper>
 					<divider></divider>
@@ -62,64 +66,22 @@
 </template>
 
 <script>
-	const demo = [{
-		username:"昵称",
-		userpic:"/static/default.jpg",
-		newstime:"2019-10-20 下午04:30",
-		isFollow:true,
-		title:"我是标题",
-		titlepic:"/static/demo/datapic/11.jpg",
-		support:{
-			type:"support", // 顶
-			support_count:1,
-			unsupport_count:2
-		},
-		comment_count:2,
-		share_num:2
-	},
-	{
-		username:"昵称",
-		userpic:"/static/default.jpg",
-		newstime:"2019-10-20 下午04:30",
-		isFollow:true,
-		title:"我是标题",
-		titlepic:"",
-		support:{
-			type:"unsupport", // 踩
-			support_count:1,
-			unsupport_count:2
-		},
-		comment_count:2,
-		share_num:2
-	},
-	{
-		username:"昵称",
-		userpic:"/static/default.jpg",
-		newstime:"2019-10-20 下午04:30",
-		isFollow:true,
-		title:"我是标题",
-		titlepic:"",
-		support:{
-			type:"", // 未操作
-			support_count:1,
-			unsupport_count:2
-		},
-		comment_count:2,
-		share_num:2
-	}];
+
 	import uniNavBar from '@/components/uni-ui/uni-nav-bar/uni-nav-bar.vue';
 	import commonList from '@/components/common/common-list.vue';
 	import loadMore from '@/components/common/load-more.vue';
 	
 	import hotCate from '@/components/news/hot-cate.vue';
 	import topicList from '@/components/news/topic-list.vue';
+	import noThing from '@/components/common/no-thing.vue';
 	export default {
 		components: {
 			uniNavBar,
 			commonList,
 			loadMore,
 			hotCate,
-			topicList
+			topicList,
+			noThing
 		},
 		data() {
 			return {
@@ -134,82 +96,13 @@
 				list:[],
 				// 1.上拉加载更多  2.加载中... 3.没有更多了
 				loadmore:"上拉加载更多",
+				page:1,
 				
-				hotCate:[{
-					name:"关注",
-				},{
-					name:"推荐"
-				},{
-					name:"体育"
-				},{
-					name:"热点"
-				},{
-					name:"财经"
-				},{
-					name:"娱乐"
-				}],
+				hotCate:[],
 				
-				topicList:[{
-					cover:"/static/demo/topicpic/1.jpeg",
-					title:"话题名称",
-					desc:"话题描述",
-					today_count:0,
-					news_count:10
-				},{
-					cover:"/static/demo/topicpic/1.jpeg",
-					title:"话题名称",
-					desc:"话题描述",
-					today_count:0,
-					news_count:10
-				},{
-					cover:"/static/demo/topicpic/1.jpeg",
-					title:"话题名称",
-					desc:"话题描述",
-					today_count:0,
-					news_count:10
-				},{
-					cover:"/static/demo/topicpic/1.jpeg",
-					title:"话题名称",
-					desc:"话题描述",
-					today_count:0,
-					news_count:10
-				},{
-					cover:"/static/demo/topicpic/1.jpeg",
-					title:"话题名称",
-					desc:"话题描述",
-					today_count:0,
-					news_count:10
-				},{
-					cover:"/static/demo/topicpic/1.jpeg",
-					title:"话题名称",
-					desc:"话题描述",
-					today_count:0,
-					news_count:10
-				},{
-					cover:"/static/demo/topicpic/1.jpeg",
-					title:"话题名称",
-					desc:"话题描述",
-					today_count:0,
-					news_count:10
-				},{
-					cover:"/static/demo/topicpic/1.jpeg",
-					title:"话题名称",
-					desc:"话题描述",
-					today_count:0,
-					news_count:10
-				},{
-					cover:"/static/demo/topicpic/1.jpeg",
-					title:"话题名称",
-					desc:"话题描述",
-					today_count:0,
-					news_count:10
-				},{
-					cover:"/static/demo/topicpic/1.jpeg",
-					title:"话题名称",
-					desc:"话题描述",
-					today_count:0,
-					news_count:10
-				}]
+				topicList:[],
+				
+				swiperList:[]
 			}
 		},
 		onLoad() {
@@ -218,10 +111,66 @@
 					this.scrollH = res.windowHeight - res.statusBarHeight - 44
 				}
 			})
-			// 加载测试数据
-			this.list = demo
+			// 获取数据
+			this.getTopicNav()
+			this.getSwipers()
+			this.getHotTopic()
+		},
+		onShow() {
+			this.page = 1
+			this.getList()
 		},
 		methods: {
+			// 获取关注好友文章列表
+			getList(){
+				let isrefresh = this.page === 1
+				this.$H.get('/followpost/'+this.page,{},{
+					token:true,
+					notoast:true
+				}).then(res=>{
+					let list = res.list.map(v=>{
+						return this.$U.formatCommonList(v)
+					})
+					this.list = isrefresh ? list : [...this.list,...list];
+					this.loadmore  = list.length < 10 ? '没有更多了' : '上拉加载更多';
+				}).catch(err=>{
+					if(!isrefresh){
+						this.page--;
+					}
+				})
+			},
+			// 获取热门分类
+			getTopicNav(){
+				this.$H.get('/topicclass').then(res=>{
+					this.hotCate = res.list.map(item=>{
+						return {
+							id:item.id,
+							name:item.classname
+						}
+					})
+				})
+			},
+			// 获取热门话题
+			getHotTopic(){
+				this.$H.get('/hottopic').then(res=>{
+					this.topicList = res.list.map(item=>{
+						return {
+							id:item.id,
+							cover:item.titlepic,
+							title:item.title,
+							desc:item.desc,
+							today_count:item.todaypost_count,
+							news_count:item.post_count
+						}
+					})
+				})
+			},
+			// 获取轮播图
+			getSwipers(){
+				this.$H.get('/adsense/0').then(res=>{
+					this.swiperList = res.list
+				})
+			},
 			// 打开发布页
 			openAddInput(){
 				uni.navigateTo({
@@ -264,13 +213,15 @@
 				if (this.loadmore !== '上拉加载更多') return;
 				// 设置加载状态
 				this.loadmore = '加载中...'
-				// 模拟请求数据
-				setTimeout(()=>{
-					// 加载数据
-					this.list = [...this.list,...this.list]
-					// 设置加载状态
-					this.loadmore = '上拉加载更多'
-				},2000)
+				// 请求数据
+				this.page++
+				this.getList()
+			},
+			// 打开搜索页
+			openSearch(){
+				uni.navigateTo({
+					url: '../search/search?type=topic',
+				});
 			}
 		}
 	}
